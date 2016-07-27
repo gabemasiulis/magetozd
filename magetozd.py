@@ -49,3 +49,4 @@ for payload in payloads:
         print('Import failed with status {}'.format(response.status_code))
         break
     print('Successfully imported a batch of users')
+importFile.close()
