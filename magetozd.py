@@ -9,7 +9,7 @@ session.headers = {'Content-Type': 'application/json'}
 session.auth = '{EMAIL}', '{PASSWORD}'
 url = 'https://{DOMAIN}.zendesk.com/api/v2/users/create_many.json'
 
-importFile = open('C:/users/gabe/downloads/customers.csv')
+importFile = open('{PATH TO FILE}')
 
 dataParser = csv.reader(importFile)
 users_dict = {'users': []}
