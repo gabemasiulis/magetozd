@@ -1,28 +1,39 @@
+# Python 2.7
 import csv # we're taking a CSV input
 import json # we're outputting JSON...
 import requests # ... to an API endpoint
+import re # we'll format phone numbers with some regex
 
 session = requests.Session()
 session.headers = {'Content-Type': 'application/json'}
 session.auth = '{EMAIL}', '{PASSWORD}'
 url = 'https://{DOMAIN}.zendesk.com/api/v2/users/create_many.json'
 
-
-# change the importFile for your path. TODO: make this interactive.
-importFile = open('C:/path/to/customers.csv')
+importFile = open('C:/users/gabe/downloads/customers.csv')
 
 dataParser = csv.reader(importFile)
-users_dict = {'users': []} # creates a users dictionary
+users_dict = {'users': []}
 payloads = [] # creates a dictionary of users dictionaries, max length will be 100
 
 for row in dataParser:
     if dataParser.line_num != 1: # skip the header
-        if list(row)[4]:
+        if list(row)[4]: # we're only importing users with phone numbers
+            phoneNumber = '+1' + re.sub(r"\D", "", list(row)[4]) # format the number
             users_dict['users'].append(
                 {
                     'name': list(row)[1],
-                    'email': list(row)[2],
-                    'phone': list(row)[4]
+                    "identities": [
+                        {
+                            "type": "email",
+                            "value": list(row)[2],
+                            "verified": True
+                        },
+                        {
+                            "type": "phone_number",
+                            "value": phoneNumber,
+                            "verified": True
+                        }
+                    ]
                 }
             )
             if len(users_dict['users']) == 100: # if we hit the max length
